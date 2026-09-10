@@ -1,0 +1,98 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+// Structure for a linked list node
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Function to create a new node
+struct Node* createNode(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (!newNode) {
+        printf("Memory allocation failed!\n");
+        exit(EXIT_FAILURE);
+    }
+    newNode->data = value;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Function to insert a node at the end of the list
+void insertEnd(struct Node** head, int value) {
+    struct Node* newNode = createNode(value);
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    struct Node* temp = *head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    temp->next = newNode;
+}
+
+// Function to search for an element in the linked list
+bool searchElement(struct Node* head, int key) {
+    struct Node* current = head;
+    while (current != NULL) {
+        if (current->data == key) {
+            return true; // Element found
+        }
+        current = current->next;
+    }
+    return false; // Element not found
+}
+
+// Function to free the linked list memory
+void freeList(struct Node* head) {
+    struct Node* temp;
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
+int main() {
+    struct Node* head = NULL;
+    int n, value, key;
+
+    printf("Enter number of elements in the linked list: ");
+    if (scanf("%d", &n) != 1 || n < 0) {
+        printf("Invalid input. Please enter a non-negative integer.\n");
+        return 1;
+    }
+
+    // Input list elements
+    for (int i = 0; i < n; i++) {
+        printf("Enter element %d: ", i + 1);
+        if (scanf("%d", &value) != 1) {
+            printf("Invalid input. Please enter integers only.\n");
+            freeList(head);
+            return 1;
+        }
+        insertEnd(&head, value);
+    }
+
+    // Input the element to search
+    printf("Enter the element to search: ");
+    if (scanf("%d", &key) != 1) {
+        printf("Invalid input. Please enter an integer.\n");
+        freeList(head);
+        return 1;
+    }
+
+    // Search and display result
+    if (searchElement(head, key)) {
+        printf("Element %d found in the linked list.\n", key);
+    } else {
+        printf("Element %d not found in the linked list.\n", key);
+    }
+
+    // Free allocated memory
+    freeList(head);
+    return 0;
+}
